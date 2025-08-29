@@ -35,7 +35,6 @@ const Home = ({ profileUser }) => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [showPopup, setShowPopup] = useState(false);
   const [loginPopup, setLoginPopup] = useState(false);
-const navigate = useNavigate();
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState({});
   const [posts, setPosts] = useState([]);
@@ -62,7 +61,7 @@ const navigate = useNavigate();
   };
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/users", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data.filter((u) => u._id !== user._id));
