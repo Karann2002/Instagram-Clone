@@ -1,12 +1,9 @@
 import React, { useEffect, useRef,useState } from "react";
-import { IoIosInformationCircleOutline } from "react-icons/io";
-import { FcVideoCall } from "react-icons/fc";
-import { MdCall } from "react-icons/md";
 import { VscSend } from "react-icons/vsc";
 import axios from "axios";
 import { io } from "socket.io-client";
 import { useUser } from "../Context/UserContext";
-import { Bookmark, CircleAlert, Clapperboard, Contact, Grid3x3, Heart, Image, Mic, Phone, Send, Smile, Video } from "lucide-react";
+import {  CircleAlert, Heart, Image, Mic, Phone, Send, Smile, Video } from "lucide-react";
 import EmojiPicker from "emoji-picker-react";
 
 
