@@ -24,14 +24,14 @@ const app = express();
 const server = http.createServer(app);
 
 // Serve frontend (React build)
-const clientDistPath = path.join(__dirname, "client", "dist");
+const clientDistPath = path.join(__dirname, "../client/dist");
 
 // Serve static files from client
 app.use(express.static(clientDistPath));
 
 // Handle SPA (React Router) fallback
 app.get("*", (req, res) => {
-  res.sendFile(path.resolve(clientDistPath, "index.html"));
+  res.sendFile(path.resolve(clientDistPath, "../client/dist/index.html"));
 });
 
 app.use(cors());
