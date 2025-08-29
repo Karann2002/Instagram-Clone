@@ -34,7 +34,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/messages", messageRoutes);
 app.use("/api/conversations",conversationsRoutes );
 
-
+app.get("/api", (req, res) => {
+  res.send("✅ API is running...");
+});
 // Socket.io setup
 const io = new Server(server, {
   cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] },
@@ -98,6 +100,8 @@ io.on("connection", (socket) => {
   socket.on("sendNotification", ({ receiverId, notification }) => {
     io.to(receiverId).emit("getNotification", notification);
   });
+
+  
 
   // --- Disconnect
   socket.on("disconnect", () => {
