@@ -30,12 +30,12 @@ const clientDistPath = path.join(__dirname, "../client/dist");
 app.use(express.static(clientDistPath));
 
 // Handle SPA (React Router) fallback
-app.get("*", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.resolve(clientDistPath, "../client/dist/index.html"));
 });
 
 app.use(cors({
-  origin: ["http://localhost:5173", "https://instagram-clone-4hrf.onrender.com"], // frontend URLs
+  origin: ["http://localhost:5173"], // frontend URLs
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));

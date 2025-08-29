@@ -22,7 +22,6 @@ import { useUser } from "../Context/UserContext";
 import socket from "../../socket";
 import FollowButton from "../Components/followUnfollow/FollowButton";
 import { Link } from "react-router-dom";
-
 import StoryViewer from "../Components/Stories/story";
 import SwitchLogin from "../Auth/Login/SwitchLogin";
 
