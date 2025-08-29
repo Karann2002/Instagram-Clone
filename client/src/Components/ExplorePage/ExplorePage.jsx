@@ -15,7 +15,7 @@ const ExplorePage = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const res = await axios.get('http://localhost:5000/api/posts', {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts`, {
             headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
           });
       setPosts(res.data)

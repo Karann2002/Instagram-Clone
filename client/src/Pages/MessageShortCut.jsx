@@ -19,7 +19,7 @@ const MessageShortCut = () => {
   const fetchConversations = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/conversations/${user._id}`,
+        `${import.meta.env.VITE_API_URL}/conversations/${user._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setConversations(res.data);

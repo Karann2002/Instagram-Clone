@@ -22,7 +22,7 @@ export default function AccountSettings() {
   };
   useEffect(() => {
     const fetchProfile = async () => {
-      const res = await axios.get("http://localhost:5000/api/users/profile", {
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/profile`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -56,7 +56,7 @@ export default function AccountSettings() {
       data.append("profilePic", imageFile); // must match backend multer field name
     }
     setLoading(true);
-    await axios.put("http://localhost:5000/api/users/profile/update", data, {
+    await axios.put(`${import.meta.env.VITE_API_URL}/users/profile/update`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
 

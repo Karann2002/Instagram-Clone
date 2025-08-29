@@ -42,21 +42,10 @@ const onEmojiClick = (emojiData) => {
   setShowEmoji(false);
 };
 
-  // 🚀 fetch all users except current
-  const fetchUsers = async () => {
-    try {
-      const res = await axios.get("http://localhost:5000/api/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setUsers(res.data.filter((u) => u._id !== user._id));
-    } catch (err) {
-      console.error("Fetch error:", err.response || err.message);
-    }
-  };
 const fetchConversations = async () => {
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/conversations/${user._id}`,
+      `${import.meta.env.VITE_API_URL}/conversations/${user._id}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
     setConversations(res.data);
@@ -74,7 +63,7 @@ useEffect(() => {
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/messages/${user._id}/${selectedUser._id}`,
+        `${import.meta.env.VITE_API_URL}/messages/${user._id}/${selectedUser._id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setChat(res.data);

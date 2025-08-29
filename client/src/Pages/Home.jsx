@@ -75,7 +75,7 @@ const Home = ({ profileUser }) => {
     try {
       // socket.emit("CommentPost", { postId, userId: user.id });
       const res = await axios.get(
-        `http://localhost:5000/api/posts/${postId}/comments`
+        `${import.meta.env.VITE_API_URL}/posts/${postId}/comments`
       );
       setComments((prev) => ({
         ...prev,
@@ -92,7 +92,7 @@ const Home = ({ profileUser }) => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/posts/comment/${postId}`,
+        `${import.meta.env.VITE_API_URL}/posts/comment/${postId}`,
         {
           text, // ✅ send the actual comment string
           userCommentProfilePicUrl: user?.profilePicUrl,

@@ -58,7 +58,7 @@ const Profile = () => {
       try {
         const token = localStorage.getItem("token");
 
-        const res = await axios.get("http://localhost:5000/api/posts/mine", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/posts/mine`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -85,7 +85,7 @@ const Profile = () => {
   const fetchCommentsForPost = async (postId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/posts/${postId}/comments`
+        `${import.meta.env.VITE_API_URL}/posts/${postId}/comments`
       );
       setComments((prev) => ({
         ...prev,
@@ -102,7 +102,7 @@ const Profile = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/posts/comment/${postId}`,
+        `${import.meta.env.VITE_API_URL}/posts/comment/${postId}`,
         {
           text: commentText,
         },

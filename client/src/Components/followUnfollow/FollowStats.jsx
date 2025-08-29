@@ -9,7 +9,7 @@ const FollowStats = ({ profileUserId }) => {
 
     const fetchFollowStats = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/users/${profileUserId}/follow-stats`, {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/${profileUserId}/follow-stats`, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         setFollowersCount(res.data.followersCount);

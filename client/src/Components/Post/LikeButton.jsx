@@ -22,7 +22,7 @@ const LikeButton = ({
       socket.emit("likePost", { postId, userId: currentUserId });
 
       const res = await axios.put(
-        `http://localhost:5000/api/posts/like/${postId}`,
+        `${import.meta.env.VITE_API_URL}/posts/like/${postId}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

@@ -11,7 +11,7 @@ const FollowButton = ({ profileUserId }) => {
     const checkFollowStatus = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/users/${profileUserId}/is-following`,
+          `${import.meta.env.VITE_API_URL}/users/${profileUserId}/is-following`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -33,7 +33,7 @@ const FollowButton = ({ profileUserId }) => {
 
     setLoading(true);
     try {
-      const url = `http://localhost:5000/api/users/${profileUserId}/${
+      const url = `${import.meta.env.VITE_API_URL}/users/${profileUserId}/${
         isFollowing ? "unfollow" : "follow"
       }`;
 

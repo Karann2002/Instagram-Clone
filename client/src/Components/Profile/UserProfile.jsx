@@ -36,13 +36,13 @@ const UserProfile = ({ profileUser }) => {
     const fetchUserAndPosts = async () => {
       try {
         const userRes = await fetch(
-          `http://localhost:5000/api/users/${username}`
+          `${import.meta.env.VITE_API_URL}/users/${username}`
         );
         const userData = await userRes.json();
         setUser(userData);
 
         const postsRes = await axios.get(
-          `http://localhost:5000/api/posts/${username}`
+          `${import.meta.env.VITE_API_URL}/posts/${username}`
         );
         const postsArray = postsRes.data;
         setMyPosts(postsArray);
@@ -74,7 +74,7 @@ const UserProfile = ({ profileUser }) => {
   const fetchCommentsForPost = async (postId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/posts/${postId}/comments`
+        `${import.meta.env.VITE_API_URL}/posts/${postId}/comments`
       );
       setComments((prev) => ({
         ...prev,
@@ -91,7 +91,7 @@ const UserProfile = ({ profileUser }) => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/posts/comment/${postId}`,
+        `${import.meta.env.VITE_API_URL}/posts/comment/${postId}`,
         {
           text: commentText,
         },
