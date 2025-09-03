@@ -71,11 +71,11 @@ const Reels = () => {
             ref={(el) => (videoRefs.current[idx] = el)}
             src={reel.videoUrl}
             className="h-full w-full object-cover"
-            loop
-            playsInline
-            autoPlay
-            preload="auto"
-            disablePictureInPicture
+              loop
+              playsInline
+              autoPlay
+              preload="auto"
+              disablePictureInPicture
             onClick={(e) => handleVideoClick(e, idx)}
             controls={false}
           />

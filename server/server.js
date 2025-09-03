@@ -59,13 +59,13 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-  console.log("✅ User connected:", socket.id);
+  // console.log("✅ User connected:", socket.id);
 
   // --- User joins their room
   socket.on("join", (userId) => {
     socket.userId = userId;
     socket.join(userId);
-    console.log(`User ${userId} joined their personal room`);
+    // console.log(`User ${userId} joined their personal room`);
   });
 
   // --- Like Post
@@ -118,7 +118,7 @@ io.on("connection", (socket) => {
 
   // --- Disconnect
   socket.on("disconnect", () => {
-    console.log("❌ User disconnected:", socket.id);
+    // console.log("❌ User disconnected:", socket.id);
   });
 });
 

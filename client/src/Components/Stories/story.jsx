@@ -1,8 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import {  CircleAlert, Heart, Image, Mic, Phone, Send, Smile, Video } from "lucide-react";
+import { VscSend } from "react-icons/vsc";
+import EmojiPicker from "emoji-picker-react";
+
+import { useUser } from "../../Context/UserContext";
+import UserStory from "./UserStory";
 
 const StoryViewer = () => {
+  const {user} = useUser();
+  const [showEmoji, setShowEmoji] = useState(false);
+  
+  const [userStory] = useState([
+    {
+      image: './../../../public/logo/download.jpg',
+      title: "New task assigned",
+      username: "karan___kusheah",
+      timestamp: Date.now() - 100000,
+    },
+  ])
   const [stories] = useState([
     {
       image: "https://images.unsplash.com/photo-1603415526960-f7e0328c63b1?w=800",
@@ -108,8 +125,8 @@ const StoryViewer = () => {
 
   return (
     <div>
-      {/* Thumbnails */}
       <div className="flex gap-4 overflow-x-auto">
+       <UserStory/>
         {userList.map((username, index) => {
           const firstStory = groupedStories[username][0];
           return (
@@ -121,7 +138,9 @@ const StoryViewer = () => {
                 setActiveIndex(0);
               }}
             >
+              
               <div className="h-16 w-16 rounded-full border-2 border-pink-500 overflow-hidden">
+                 
                 <img
                   src={firstStory.image}
                   alt={firstStory.title}
@@ -135,60 +154,112 @@ const StoryViewer = () => {
       </div>
 
       {/* Viewer */}
-      {activeUser && (
-        <div className="fixed inset-0 bg-black bg-opacity-90 flex flex-col items-center justify-center z-50">
-         
-          <div className="relative w-full h-[90vh] max-w-md">
-            <div>
-            <div className="absolute top-4 left-0 right-0 flex gap-1 px-4">
-            {currentStories.map((_, i) => (
-              <div key={i} className="flex-1 bg-gray-500 h-1 rounded">
-                {i === activeIndex && (
-                  <motion.div
-                    className="bg-white h-1 rounded"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                  />
-                )}
-                 
-              </div>
-            ))}
-            
+     {activeUser && (
+  <div className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+    <div className="relative w-full max-w-md h-full sm:h-[90vh] sm:rounded-xl overflow-hidden flex flex-col">
+      
+      {/* Progress Bar */}
+      <div className="absolute top-2 left-0 right-0 flex gap-1 px-3 sm:px-6">
+        {currentStories.map((_, i) => (
+          <div key={i} className="flex-1 bg-gray-600 h-1 rounded overflow-hidden">
+            {i === activeIndex && (
+              <motion.div
+                className="bg-white h-1"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+              />
+            )}
           </div>
-           <div className="absolute flex gap-2 top-8 justify-center items-center text-white px-2 sm:px-6">
-            <img src={currentStories[activeIndex].image} alt="" 
-            className="h-10 w-10 object-cover rounded-full"/>
-              <p className="font-semibold text-sm sm:text-base">
-                {currentStories[activeIndex].username}
-              </p>
-            </div>
-          </div>
-         
-            <img
-              src={currentStories[activeIndex].image}
-              alt="story"
-              className="w-full h-[90vh] object-cover rounded-xl"
-            />
-           
-            <div className="absolute inset-0 flex">
-              <div className="w-1/2 flex items-center" onClick={handlePrev}>
-                <ChevronLeft className="text-white" />
+        ))}
+      </div>
+
+      {/* Header: Profile info */}
+      <div className="absolute top-6 left-0 flex items-center gap-2 px-3 sm:px-6 text-white">
+        <img
+          src={currentStories[activeIndex].image}
+          alt="profile"
+          className="h-10 w-10 rounded-full object-cover border border-gray-400"
+        />
+        <p className="font-semibold text-sm sm:text-base">
+          {currentStories[activeIndex].username}
+        </p>
+      </div>
+
+      {/* Story Image */}
+      <img
+        src={currentStories[activeIndex].image}
+        alt="story"
+        className="w-full h-full object-contain sm:object-cover"
+      />
+
+      {/* Message Input + Reactions */}
+      <div className="absolute bottom-3 left-0 w-full px-3 sm:px-6">
+        <div className="flex items-center gap-2 bg-opacity-30 border border-gray-600 px-3 py-2 rounded-full">
+          
+          {/* Emoji Button */}
+          <div className="relative">
+            <button
+              onClick={() => setShowEmoji((prev) => !prev)}
+              className="text-gray-300 hover:text-blue-400"
+            >
+              <Smile size={22} />
+            </button>
+            {showEmoji && (
+              <div className="absolute bottom-12 left-0 z-50">
+                <EmojiPicker theme="light" />
               </div>
-              <div className="w-1/2 flex items-center justify-end" onClick={handleNext}>
-                <ChevronRight className="text-white" />
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Close */}
+          {/* Input */}
+          <input
+            type="text"
+            placeholder="Type a message..."
+            className="flex-grow bg-transparent text-white placeholder-gray-400 text-sm focus:outline-none"
+            // value={message}
+            // onChange={(e) => setMessage(e.target.value)}
+            // onKeyDown={(e) => e.key === "Enter" && sendMessage()}
+          />
+
+          {/* Heart Reaction */}
           <button
-            className="absolute top-4 right-4 text-white text-lg"
-            onClick={() => setActiveUser(null)}
+            // onClick={() => sendMessage("❤️")}
+            className="text-gray-300 hover:scale-110 transition"
           >
-            ✕
+            <Heart size={22} />
+          </button>
+
+          {/* Send */}
+          <button
+            // onClick={sendMessage}
+            className="bg-blue-500 hover:bg-blue-600 text-white p-2 rounded-full"
+          >
+            <VscSend size={16} />
           </button>
         </div>
-      )}
+      </div>
+
+      {/* Navigation Arrows */}
+      <div className="absolute inset-0 flex justify-between items-center">
+        <button onClick={handlePrev} className="p-3">
+          <ChevronLeft className="text-white w-7 h-7" />
+        </button>
+        <button onClick={handleNext} className="p-3">
+          <ChevronRight className="text-white w-7 h-7" />
+        </button>
+      </div>
+
+      {/* Close Button */}
+      <button
+        className="absolute top-4 right-4 text-white text-2xl"
+        onClick={() => setActiveUser(null)}
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

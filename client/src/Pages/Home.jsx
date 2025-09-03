@@ -26,7 +26,6 @@ import StoryViewer from "../Components/Stories/story";
 import SwitchLogin from "../Auth/Login/SwitchLogin";
 
 const Home = ({ profileUser }) => {
-   
   const token = localStorage.getItem("token");
   const { user } = useUser();
   const [loading, setLoading] = useState(true);
@@ -45,7 +44,7 @@ const Home = ({ profileUser }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-     setPosts(res.data.filter((post) => post.author._id !== user._id));
+      setPosts(res.data.filter((post) => post.author._id !== user._id));
 
       res.data.forEach((post) => {
         fetchCommentsForPost(post._id);
@@ -59,16 +58,18 @@ const Home = ({ profileUser }) => {
   };
   const fetchUsers = async () => {
     try {
-      const res = await axios.get(`${import.meta.env.VITE_API_URL}/users/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/users/profile`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       setUsers(res.data.filter((u) => u._id !== user._id));
     } catch (err) {
       console.error("Fetch error:", err.response || err.message || err);
-    }finally {
+    } finally {
       setLoading(false);
     }
-    
   };
 
   const fetchCommentsForPost = async (postId) => {
@@ -114,10 +115,10 @@ const Home = ({ profileUser }) => {
   };
 
   useEffect(() => {
-  if (user?._id) {
-    socket.emit("addUser", user._id); // join personal room
-  }
-}, [user]);
+    if (user?._id) {
+      socket.emit("addUser", user._id); // join personal room
+    }
+  }, [user]);
 
   useEffect(() => {
     const handlePostCommented = ({ postId: commentedPostId }) => {
@@ -142,9 +143,8 @@ const Home = ({ profileUser }) => {
           <Heart />
 
           <Link to="/message">
-          <Send size={24}/>
-        </Link>
-         
+            <Send size={24} />
+          </Link>
         </div>
       </div>
 
@@ -157,8 +157,7 @@ const Home = ({ profileUser }) => {
             <div className="w-full flex flex-col items-center min-h-screen md:pr-20">
               {/* STORIES */}
               <div className="w-full max-w-2xl overflow-x-auto px-2 flex gap-4 py-4 border-b border-gray-300">
-                <StoryViewer/>
-               
+                <StoryViewer />
               </div>
 
               {/* FEED POSTS */}
@@ -166,30 +165,32 @@ const Home = ({ profileUser }) => {
                 {posts.map((post) => (
                   <div key={post._id} className="bg-white md:px-5 ">
                     <div className="flex justify-between items-center">
-                    <div className="flex items-center px-2 gap-3 mb-3">
-                      <Link to={`/profile/${post.author?.username}`}>
-                        <img
-                          src={post.authorProfilePicUrl}
-                          alt=""
-                          className="h-10 w-10 rounded-full object-cover"
-                        />
-                      </Link>
-
-                      <div>
+                      <div className="flex items-center px-2 gap-3 mb-3">
                         <Link to={`/profile/${post.author?.username}`}>
-                          <h1 className="font-semibold text-sm">
-                            {post.author?.username || "N/A"}
-                          </h1>
+                          {
+                            <img
+                              src={post.authorProfilePicUrl}
+                              alt=""
+                              className="h-10 w-10 rounded-full object-cover"
+                            />
+                          }
                         </Link>
-                        <p className="text-xs text-gray-500">
-                          {new Date(post.createdAt).toLocaleTimeString()}
-                        </p>
+
+                        <div>
+                          <Link to={`/profile/${post.author?.username}`}>
+                            <h1 className="font-semibold text-sm">
+                              {post.author?.username || "N/A"}
+                            </h1>
+                          </Link>
+                          <p className="text-xs text-gray-500">
+                            {new Date(post.createdAt).toLocaleTimeString()}
+                          </p>
+                        </div>
                       </div>
-                    </div>
                       <div className="flex">
                         <EllipsisVertical size={20} />
                       </div>
-</div>
+                    </div>
                     <div
                       className="rounded-sm "
                       onClick={() => {
@@ -197,11 +198,24 @@ const Home = ({ profileUser }) => {
                         setSelectedPost(post);
                       }}
                     >
-                      <img
-                        src={post.imageUrl}
-                        alt=""
-                        className="w-full object-contain max-h-[400px]"
-                      />
+                      {post.mediaType === "video" ? (
+                        <video
+                          src={post.imageUrl}
+                          controls={false}
+                          loop
+                          playsInline
+                          autoPlay
+                          preload="auto"
+                          disablePictureInPicture
+                          className="w-full object-contain max-h-[400px]"
+                        />
+                      ) : (
+                        <img
+                          src={post.imageUrl}
+                          alt="Post"
+                          className="w-full object-contain max-h-[400px]"
+                        />
+                      )}
                       {showPopup && (
                         <Dialog
                           open={showPopup}
@@ -213,12 +227,25 @@ const Home = ({ profileUser }) => {
                           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                             <DialogPanel className="w-full h-full mx-60 my-10 rounded-lg bg-white ">
                               <div className="bg-white flex  bg-opacity-100 h-full w-full relative ">
-                                <div className="">
-                                  <img
-                                    src={selectedPost.imageUrl}
-                                    alt="Post"
-                                    className="max-w-130 h-full object-contain rounded-lg mb-4"
-                                  />
+                                <div className="flex justify-center">
+                                  {selectedPost.mediaType === "video" ? (
+                        <video
+                          src={selectedPost.imageUrl}
+                          controls={false}
+                          loop
+                          playsInline
+                          autoPlay
+                          preload="auto"
+                          disablePictureInPicture
+                          className="max-w-130  object-contain "
+                        />
+                      ) : (
+                        <img
+                          src={selectedPost.imageUrl}
+                          alt="Post"
+                          className="max-w-130 object-contain h-full"
+                        />
+                      )}
                                 </div>
                                 <div className="flex flex-col w-full justify-between ">
                                   <div>
@@ -426,40 +453,42 @@ const Home = ({ profileUser }) => {
             {/* SUGGESTIONS - HIDDEN ON MOBILE */}
             <div className="hidden md:block w-full max-w-sm p-5">
               <div className="flex justify-between items-center">
-                <Link to={'/profile'}>
-                <div className="flex gap-3 items-center"
-                >
-
-                  <img
-                    src={user?.profilePicUrl}
-                    alt=""
-                    className="h-12 w-12 rounded-full object-cover"
-                  />
-                  <div>
-                    <p className="font-bold text-sm">{user?.username}</p>
-                    <p className="font-light text-xs">{user?.fullName}</p>
+                <Link to={"/profile"}>
+                  <div className="flex gap-3 items-center">
+                    <img
+                      src={user?.profilePicUrl}
+                      alt=""
+                      className="h-12 w-12 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="font-bold text-sm">{user?.username}</p>
+                      <p className="font-light text-xs">{user?.fullName}</p>
+                    </div>
                   </div>
-                </div>
                 </Link>
-                <button className="text-blue-600 text-sm"
-                onClick={() => {
-                        setLoginPopup(true);
-                      }}>Switch</button>
+                <button
+                  className="text-blue-600 text-sm"
+                  onClick={() => {
+                    setLoginPopup(true);
+                  }}
+                >
+                  Switch
+                </button>
                 {loginPopup && (
-                            <Dialog
-                              open={loginPopup}
-                              onClose={setLoginPopup}
-                              className="relative z-50 hidden md:flex"
-                            >
-                              <DialogBackdrop className="fixed inset-0 bg-black/50 opacity-20" />
-    
-                              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                                <DialogPanel className=" mx-60 my-10 rounded-lg bg-white ">
-                                  <SwitchLogin/>
-                                </DialogPanel>
-                              </div>
-                            </Dialog>
-                          )}
+                  <Dialog
+                    open={loginPopup}
+                    onClose={setLoginPopup}
+                    className="relative z-50 hidden md:flex"
+                  >
+                    <DialogBackdrop className="fixed inset-0 bg-black/50 opacity-20" />
+
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+                      <DialogPanel className=" mx-60 my-10 rounded-lg bg-white ">
+                        <SwitchLogin />
+                      </DialogPanel>
+                    </div>
+                  </Dialog>
+                )}
               </div>
 
               <div className="flex justify-between mt-5">

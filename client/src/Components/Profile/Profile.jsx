@@ -136,11 +136,24 @@ const Profile = () => {
                   <div className="">
                     <div key={post.id} className="relative">
                       <div className="aspect-square overflow-hidden cursor-pointer ">
-                        <img
+                        {post.mediaType === "video" ? (
+  <video
                           src={post.imageUrl}
-                          alt=""
-                          className=" w-full h-full object-cover "
-                        />
+                          controls={false}
+                          loop
+                          playsInline
+                          autoPlay
+                          preload="auto"
+                          disablePictureInPicture
+    className=" w-full h-full object-cover"
+  />
+) : (
+  <img
+    src={post.imageUrl}
+    alt="Post"
+    className=" w-full h-full object-cover "
+  />
+)}
                       </div>
 
                       <div
@@ -172,13 +185,26 @@ const Profile = () => {
                             <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                               <DialogPanel className="w-full h-full mx-60 my-10 rounded-lg bg-white ">
                                 <div className="bg-white flex  bg-opacity-100 h-full w-full relative ">
-                                  <div className="">
-                                    <img
-                                      src={selectedPost.imageUrl}
-                                      alt="Post"
-                                      className="max-w-130 h-full object-contain rounded-lg mb-4"
-                                    />
-                                  </div>
+                                  <div className="flex justify-center">
+                                  {selectedPost.mediaType === "video" ? (
+                        <video
+                          src={selectedPost.imageUrl}
+                          controls={false}
+                          loop
+                          playsInline
+                          autoPlay
+                          preload="auto"
+                          disablePictureInPicture
+                          className="max-w-130  object-contain "
+                        />
+                      ) : (
+                        <img
+                          src={selectedPost.imageUrl}
+                          alt="Post"
+                          className="max-w-130 object-contain h-full"
+                        />
+                      )}
+                                </div>
                                   <div className="flex flex-col w-full justify-between ">
                                     <div>
                                       <div key={post.id} className="bg-white ">

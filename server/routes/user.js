@@ -76,10 +76,12 @@ router.post("/:id/follow", verifyToken, async (req, res) => {
     userToFollow.followers.push(currentUser._id);
     currentUser.following.push(userToFollow._id);
 
+    
+
     await userToFollow.save();
     await currentUser.save();
 
-    res.status(200).json({ message: "Followed successfully" });
+    res.status(200).json({ message: "Followed successfully"   });
   } catch (err) {
     console.error("Follow error:", err);
     res.status(500).json({ message: err.message });
@@ -118,14 +120,12 @@ router.get("/:id/is-following", verifyToken, async (req, res) => {
     const profileUserId = req.params.id;
 
     const isFollowing = currentUser.following.includes(profileUserId);
-    // const doesUserFollowMe = profileUser.following.includes(currentUserId);
-    // console.log(doesUserFollowMe);
+    
     
         
     res.status(200).json({
       isFollowing,
-      // doesUserFollowMe: !!doesUserFollowMe,
-    });
+        });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

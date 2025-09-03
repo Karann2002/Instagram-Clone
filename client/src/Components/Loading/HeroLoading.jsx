@@ -39,7 +39,7 @@ const HeroLoading = () => {
     <div className='flex flex-col w-full h-[95vh] justify-center items-center'>
         <img className='h-15 w-15' src='/logo/download.jpg' alt="" />
     </div>
-        <div className='flex  w-full justify-center items-center'>Karan-Kushwah <Heart/></div>
+        <div className='flex  w-full justify-center items-center'>Karan-Kushwah ❤️</div>
     </div>
   )
 }

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+import { useUser } from "../../Context/UserContext";
 
 const CreatePost = ({ onPostCreated = () => {} }) => {
+  const {user} = useUser();
   const [caption, setCaption] = useState("");
-  const [image, setImage] = useState(null);
+  const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const token = localStorage.getItem("token");
@@ -14,8 +15,8 @@ const CreatePost = ({ onPostCreated = () => {} }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!image) {
-      setError("Please upload an image.");
+    if (!file) {
+      setError("Please upload an image or a reel.");
       return;
     }
 
@@ -24,17 +25,23 @@ const CreatePost = ({ onPostCreated = () => {} }) => {
 
     const formData = new FormData();
     formData.append("caption", caption);
-    formData.append("image", image);
+    formData.append("file", file); 
+    formData.append("profilePicUrl", user?.profilePicUrl); 
+
 
     try {
-      const res = await axios.post(`${import.meta.env.VITE_API_URL}/posts`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      onPostCreated(res.data.post);
-      
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/posts`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      onPostCreated(res.data);
       navigate("/");
       window.location.reload();
     } catch (err) {
@@ -51,7 +58,7 @@ const CreatePost = ({ onPostCreated = () => {} }) => {
     >
       {/* Custom file input */}
       <label
-        htmlFor="imageUpload"
+        htmlFor="fileUpload"
         className="cursor-pointer flex items-center justify-center gap-2 border-2 border-dashed border-gray-300 rounded-lg p-4 text-gray-500 hover:border-blue-500 hover:text-blue-600 transition-colors"
       >
         <svg
@@ -68,13 +75,17 @@ const CreatePost = ({ onPostCreated = () => {} }) => {
             d="M3 16v-1a4 4 0 014-4h1m4-4v8m0 0l4-4m-4 4l-4-4"
           />
         </svg>
-        {image ? image.name : "Upload image"}
+        {file
+          ? file.type.startsWith("video")
+            ? `Reel selected: ${file.name}`
+            : `Image selected: ${file.name}`
+          : "Upload image or reel"}
       </label>
       <input
-        id="imageUpload"
+        id="fileUpload"
         type="file"
-        accept="image/*"
-        onChange={(e) => setImage(e.target.files[0])}
+        accept="image/*,video/*" // ✅ allow both
+        onChange={(e) => setFile(e.target.files[0])}
         className="hidden"
       />
 

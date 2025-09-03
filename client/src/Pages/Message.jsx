@@ -1,4 +1,5 @@
 import React, { useEffect, useRef,useState } from "react";
+import { Link } from "react-router-dom";
 import { VscSend } from "react-icons/vsc";
 import axios from "axios";
 import { io } from "socket.io-client";
@@ -20,10 +21,11 @@ const [showEmoji, setShowEmoji] = useState(false);
 const fileInputRef = useRef(null);
 const chatEndRef = useRef(null);
   const [message, setMessage] = useState("");
-  const [users, setUsers] = useState([]);
   const [chat, setChat] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
 const [conversations, setConversations] = useState([]);
+const [query, setQuery] = useState('');
+  const [results, setResults] = useState([]);
   const tabs = [
     { id: "feed", label: "Primary" },
     { id: "reels", label: "General" },
@@ -55,7 +57,19 @@ const fetchConversations = async () => {
   }
 };
 
-
+ 
+ useEffect(() => {
+  const fetchSearch = async () => {
+    if (!query) return setResults([]);
+    const res = await fetch(`http://localhost:5000/api/search?q=${query}`);
+    const data = await res.json();
+    setResults(data); 
+    
+    // This now contains { users, posts, tags }
+   
+  };
+  fetchSearch();
+}, [query]);
   // 🚀 fetch messages between users
 useEffect(() => {
   const fetchMessages = async () => {
@@ -176,10 +190,57 @@ const sendMessage = (quickMsg) => {
       <input
         type="text"
         placeholder="Search..."
-        // value={query}
-        // onChange={(e) => setQuery(e.target.value)}
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
         className="bg-gray-100 p-2  rounded-md w-full outline-none "
       />
+      <div>
+                      
+                      <div className="p-2">
+        
+          <div>
+           
+              <>
+                {/* USERS */}
+                {results.users?.length > 0 && (
+                  <div className="absolute bg-white w-[355px]">
+                    {results.users.map((user, idx) => (
+                      
+                      <div key={idx} className="flex  items-center hover:bg-slate-100 p-2 gap-3 mb-3"
+                      onClick={() => {
+  setSelectedUser(user);
+  socket.emit("join", user._id);
+
+  // reset unread count locally
+  setConversations((prev) =>
+    prev.map((c) =>
+      c.participants.some((p) => p._id === user._id)
+        ? { ...c, unreadCount: 0 }
+        : c
+    )
+  );
+}}>
+                        <img
+                          src={user?.profilePicUrl} 
+                          alt=""
+                          className="h-10 w-10 rounded-full object-cover"
+                        />
+                        <div>
+                          <h1 className="font-semibold text-sm">{user.username}</h1>
+                        </div>
+                      </div>
+                      
+                    ))}
+                  </div>
+                )}
+      
+              </>
+            
+          </div>
+        
+      </div>
+      
+                    </div>
       </div>
     {conversations.map((conv, idx) => {
   const sUser = conv.participants.find(p => p._id !== user._id);

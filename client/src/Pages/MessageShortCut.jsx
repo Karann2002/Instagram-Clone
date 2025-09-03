@@ -110,8 +110,8 @@ const MessageShortCut = () => {
               </div>
             </div>
 
-            <div className=" overflow-y-auto h-[460px] p-2">
-              <div className="p-2 space-y-2">
+            <div className=" overflow-y-auto h-[460px]">
+              <div className="">
                 {conversations.map((conv, idx) => {
                   const sUser = conv.participants.find(
                     (p) => p._id !== user._id

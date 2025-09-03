@@ -46,7 +46,9 @@ const UserProfile = ({ profileUser }) => {
         );
         const postsArray = postsRes.data;
         setMyPosts(postsArray);
-
+         postsRes.data.forEach((post) => {
+          fetchCommentsForPost(post._id);
+        });
         setPostCount(postsArray.length);
       } catch (err) {
         console.error("Error fetching user or posts:", err);
@@ -76,6 +78,7 @@ const UserProfile = ({ profileUser }) => {
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/posts/${postId}/comments`
       );
+      
       setComments((prev) => ({
         ...prev,
         [postId]: res.data || [],
@@ -121,20 +124,32 @@ const UserProfile = ({ profileUser }) => {
               </div>
             ) : (
               <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-3 xl:grid-cols-3">
-                {myPosts.map((post) => (
-                  <div className="">
+                {myPosts.map((post ,idx) => (
+                  <div key={idx}>
                     <div key={post._id} className="relative">
                       <div className="aspect-square overflow-hidden cursor-pointer ">
-                        <img
+                        {post.mediaType === "video" ? (
+  <video
                           src={post.imageUrl}
-                          alt=""
-                          className=" w-full h-full object-cover "
-                        />
+                          controls={false}
+                          loop
+                          playsInline
+                          autoPlay
+                          preload="auto"
+                          disablePictureInPicture
+    className=" w-full h-full object-cover"
+  />
+) : (
+  <img
+    src={post.imageUrl}
+    alt="Post"
+    className=" w-full h-full object-cover "
+  />
+)}
                       </div>
 
                       <div
                         className="absolute inset-0 bg-black  flex justify-center items-center opacity-0 hover:opacity-80 transition"
-                        // onClick={() => setSelectedPost(post)}
                         onClick={() => {
                           setShowPopup(true);
                           setSelectedPost(post);
@@ -162,11 +177,24 @@ const UserProfile = ({ profileUser }) => {
                               <DialogPanel className="w-full h-full mx-60 my-10 rounded-lg bg-white ">
                                 <div className="bg-white flex  bg-opacity-100 h-full w-full relative ">
                                   <div className="">
-                                    <img
-                                      src={selectedPost.imageUrl}
-                                      alt="Post"
-                                      className="max-w-130 h-full object-contain rounded-lg mb-4"
-                                    />
+                                     {selectedPost.mediaType === "video" ? (
+                        <video
+                          src={selectedPost.imageUrl}
+                          controls={false}
+                          loop
+                          playsInline
+                          autoPlay
+                          preload="auto"
+                          disablePictureInPicture
+                          className="max-w-130  object-contain "
+                        />
+                      ) : (
+                        <img
+                          src={selectedPost.imageUrl}
+                          alt="Post"
+                          className="max-w-130 object-contain h-full"
+                        />
+                      )}
                                   </div>
                                   <div className="flex flex-col w-full justify-between ">
                                     <div>

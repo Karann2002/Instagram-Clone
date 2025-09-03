@@ -11,28 +11,35 @@ const cloudinary = require("../utils/cloudinary");
 const { createNotification } = require("./../controllers/notificationController");
 
 // Create a new post
-router.post("/", verifyToken, upload.single("image"), async (req, res) => {
+router.post("/", verifyToken, upload.single("file"), async (req, res) => {
   try {
-    const { caption } = req.body;
+    const { caption ,profilePicUrl} = req.body;
 
-    const imageBuffer = req.file?.buffer;
-    if (!imageBuffer) {
-      return res.status(400).json({ error: "No image uploaded" });
+    const fileBuffer = req.file?.buffer;
+    if (!fileBuffer) {
+      return res.status(400).json({ error: "No file uploaded" });
     }
 
-    // Upload to Cloudinary using buffer
-    const base64Image = imageBuffer.toString("base64");
-    const dataURI = `data:${req.file.mimetype};base64,${base64Image}`;
+    // Convert buffer to Data URI
+    const base64File = fileBuffer.toString("base64");
+    const dataURI = `data:${req.file.mimetype};base64,${base64File}`;
 
+    // Detect if it's an image or video
+    const resourceType = req.file.mimetype.startsWith("video") ? "video" : "image";
+
+    // Upload to Cloudinary
     const uploadResult = await cloudinary.uploader.upload(dataURI, {
-      folder: "posts", // Optional: to organize uploads in Cloudinary
+      folder: resourceType === "video" ? "reels" : "posts", // Store in different folders
+      resource_type: resourceType, // IMPORTANT for video uploads
     });
 
+    // Save post
     const newPost = new Post({
       caption,
-      imageUrl: uploadResult.secure_url, // ✅ Use Cloudinary URL
+      imageUrl: uploadResult.secure_url, // works for both image & video
+      mediaType: resourceType,           // store type in DB
       author: req.userId,
-      authorProfilePicUrl: req.profilePicUrl,
+      authorProfilePicUrl: profilePicUrl,
     });
 
     await newPost.save();
@@ -43,6 +50,7 @@ router.post("/", verifyToken, upload.single("image"), async (req, res) => {
     res.status(500).json({ error: "Failed to create post" });
   }
 });
+
 
 // Get all posts
 router.get("/", verifyToken, async (req, res) => {
@@ -82,13 +90,16 @@ router.get("/:username", async (req, res) => {
 
   try {
     const user = await User.findOne({ username });
+    
     // console.log("Matched user:", user);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const posts = await Post.find({ author: user._id }).populate(
+    const posts = await Post.find({ author: user._id })
+    .sort({ createdAt: -1 })
+    .populate(
       "author",
       "username fullName"
     );

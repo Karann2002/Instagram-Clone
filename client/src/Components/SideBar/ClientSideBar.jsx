@@ -293,7 +293,7 @@ const ClientSideBar = () => {
       <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex justify-around items-center py-2 z-50">
         <Link to="/"><House size={24} /></Link>
         <Link to="/search"><Search size={24} /></Link>
-        <Link to="/"><SquarePlus size={24} /></Link>
+        <Link to="/create"><SquarePlus size={24} /></Link>
         <Link to="/reels"><Clapperboard size={24} /></Link>
         <Link to="/profile">
           <img

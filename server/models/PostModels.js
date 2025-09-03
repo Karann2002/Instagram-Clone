@@ -12,6 +12,7 @@ const postSchema = new mongoose.Schema(
   {
     author: { type: mongoose.Schema.Types.ObjectId, ref: "User"   },
     imageUrl : String ,
+    mediaType : String,
     caption: { type: String, default: "" },
     likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }], // users who liked
     comments: [CommentSchema],
